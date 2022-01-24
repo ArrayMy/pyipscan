@@ -61,9 +61,9 @@ class ip_scanner():
     def generateSocket(self):
         return socket(AF_INET, SOCK_STREAM)
     
-    def core(self):
+    def core(self,operation, value):
         for i in self.callBuffer:
-            self.core_functions('port','80',i[1][3])
+            self.core_functions(operation,value,i[1][3])
             
             
     def core_functions(self,operation,value,target):
@@ -76,35 +76,9 @@ class ip_scanner():
                 print('Port %d : CLOSED' % (int(value),))
             localSocket.close()
             return localSocket
-    
-        
-            
-  #Typedef list of  address:
-    #1 id
-    #2 start scan times
-    #3 stop scan time
-    #4 differents between scan times
-    #5 IP
-    #6 Add time
-        
+
 if __name__ == '__main__':
     instance = ip_scanner() 
-    adress = instance.getAdress("10.7.31.251 - 10.8.32.255")
-    instance.core()
+    adress = instance.getAdress("10.7.31.251 - 10.7.31.255")
+    instance.core("port", 80)
     
-   
-# if __name__ == '__main__':
-#     target = input('IP: ')
-#     target_ip = gethostbyname(target)
-#     print('Scanning IP adress', target_ip)
-    
-#     for i in range(50,500):
-#         s = socket(AF_INET, SOCK_STREAM)
-#         conn = s.connect_ex((target_ip, i))
-#         if(conn == 0):
-#             print('Port %d: OPEN' % (i,))
-#         s.close()
-# print('Time taken:', time.time() - init_time)
-
-
-
