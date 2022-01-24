@@ -1,4 +1,4 @@
-from calendar import c
+from calendar import c  
 from genericpath import exists
 from operator import truediv
 from pickle import FALSE
@@ -10,13 +10,11 @@ import array
 class ip_scanner():
     
     
-    def __init__(self, ip = string):
-        self.ip = ip
+    def __init__(self):
         #defualt 
         self.callBuffer = list(([0,('init','init', 'init','localhost',time.time())],[1,('init','init','init','localhost',time.time())]))
         
     def preBuffer(self, ip):
-        # id, "start scan time", "stop scan time", "differents scan time", "IP", "Add time"
         temp = len(self.callBuffer), '', '', '', ip, time.time(),
         for i in self.callBuffer:
             if i[0] == temp[0] - 1:
@@ -25,35 +23,74 @@ class ip_scanner():
         return True
     
     def getRange(self, input1, input2):
-        self.Range = str(int(input1.split('.')[0]) - int(input2.split('.')[0]))+"."+str(int(input1.split('.')[1]) - int(input2.split('.')[1]))+"."+str(int(input1.split('.')[2]) - int(input2.split('.')[2]))+"."+str(int(input1.split('.')[3]) - int(input2.split('.')[3]))
+        self.Range = str(int(input1.split('.')[0]) - int(input2.split('.')[0]))+ \
+            "."+str(int(input1.split('.')[1]) - int(input2.split('.')[1]))+ \
+            "."+str(int(input1.split('.')[2]) - int(input2.split('.')[2]))+ \
+            "."+str(int(input1.split('.')[3]) - int(input2.split('.')[3]))
         if int(self.Range.split('.')[3]) > 0:
             for i in range(int(self.Range.split('.')[3])):
                 if i<=1:
-                    self.preBuffer(str(input2.split('.')[0])+'.'+str(input2.split('.')[1])+'.'+str(input2.split('.')[2])+'.'+str((i)+int(input2.split('.')[3])))               
+                    self.preBuffer(str(input2.split('.')[0])+
+                                   '.'+str(input2.split('.')[1])+
+                                   '.'+str(input2.split('.')[2])+
+                                   '.'+str((i)+int(input2.split('.')[3])))               
                 if i>=1:
-                    self.preBuffer(str(input2.split('.')[0])+'.'+str(input2.split('.')[1])+'.'+str(input2.split('.')[2])+'.'+str((i+1)+int(input2.split('.')[3])))               
+                    self.preBuffer(str(input2.split('.')[0])+
+                                   '.'+str(input2.split('.')[1])+
+                                   '.'+str(input2.split('.')[2])+
+                                   '.'+str((i+1)+int(input2.split('.')[3])))               
         if(int(self.Range.split('.')[3]) == 0):
             self.preBuffer(input1)       
-            print(input2)             
         return int(self.Range.split('.')[3])
     
     def getAdress(self, input):
         if input.find('-') != -1:   
           IPs = self.getRange(input.split('-')[1], input.split('-')[0])
-          print('Range of ip adresses('+str(IPs)+') are save in buffer for scan!')
+          print('Range of  adresses('+str(IPs)+') are save in buffer for scan!')
+          self.callBuffer.pop(0)
+          self.callBuffer.pop(0)
           return True
         else:
           self.getRange(input, input)
           print('Adress('+input+') saved in buffer for scan!')
+          self.callBuffer.pop(0)
+          self.callBuffer.pop(0)
           return False
+      
+    #Help method  
+    def generateSocket(self):
+        return socket(AF_INET, SOCK_STREAM)
     
-  
-
+    def core(self):
+        for i in self.callBuffer:
+            self.core_functions('port','80',i[1][3])
+            
+            
+    def core_functions(self,operation,value,target):
+        print("IP: "+target)
+        if (operation == "port"):
+            localSocket = self.generateSocket()   
+            if (localSocket.connect_ex((target,int(value))) == 0):
+                print('Port %d : OPEN' % (int(value),))
+            else:
+                print('Port %d : CLOSED' % (int(value),))
+            localSocket.close()
+            return localSocket
+    
+        
+            
+  #Typedef list of  address:
+    #1 id
+    #2 start scan times
+    #3 stop scan time
+    #4 differents between scan times
+    #5 IP
+    #6 Add time
         
 if __name__ == '__main__':
     instance = ip_scanner() 
-    adress = instance.getAdress("152.168.0.199 - 152.168.0.255")
-    print(instance.callBuffer)
+    adress = instance.getAdress("10.7.31.251 - 10.8.32.255")
+    instance.core()
     
    
 # if __name__ == '__main__':
@@ -71,5 +108,3 @@ if __name__ == '__main__':
 
 
 
-
-    
